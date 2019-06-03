@@ -2,14 +2,12 @@ import socketio
 import math as m
 import random as r
 import validations as v
-import minimax as mini
 
 tileRep = ["_", "X", "O"]
 
 N = 8
 
 letters = "abcdefgh"
-
 
 def ix(row, col):
     return (row - 1) * N + letters.index(col)
@@ -38,7 +36,7 @@ def validateHumanPosition(position):
 sio = socketio.Client()
 
 sio.connect("http://localhost:4000")
-userName = 'Cristopher'
+userName = 'Seb'
 tournamentID = '12'
 
 @sio.on('connect')
@@ -53,9 +51,10 @@ def on_ready(data):
 
     movement = " "
     moves = v.getMoves(data['board'], data['player_turn_id'])
-    #randMove = r.choice(moves)
-    #movement = randMove[0]
-    movement = mini.Minimax(data['board'], data['player_turn_id'], moves, 1)
+    randMove = r.choice(moves)
+    movement = randMove[0]
+    print(v.indexToHuman(movement))
+
     sio.emit('play', {'player_turn_id': data['player_turn_id'], "tournament_id": tournamentID, "game_id": data['game_id'], "movement": movement})
 
 @sio.on('finish')
